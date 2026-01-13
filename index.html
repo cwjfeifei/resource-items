@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>聚合资源</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/4.4.0/markdown-it.min.js"></script>
     <style>
-   /* 基础变量与重置 */
+        /* 基础变量与重置 */
         :root {
             --primary: #2ea44f;
             --primary-hover: #2c974b;
@@ -45,6 +45,30 @@
             min-height: 100vh;
         }
 
+        /* 移动端汉堡菜单按钮 */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .mobile-menu-btn:active {
+            transform: scale(0.95);
+        }
+
         /* 侧边栏 - 简约风格 */
         .sidebar {
             width: 260px;
@@ -55,6 +79,8 @@
             padding: 28px 20px;
             overflow-y: auto;
             scrollbar-width: thin;
+            transition: transform 0.3s ease;
+            z-index: 999;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -64,6 +90,18 @@
         .sidebar::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 4px;
+        }
+
+        /* 侧边栏遮罩 */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
         }
 
         .logo {
@@ -144,6 +182,7 @@
             margin-left: 260px;
             padding: 40px 60px;
             max-width: 1200px;
+            width: 100%;
         }
 
         .section {
@@ -159,6 +198,7 @@
             border-bottom: 2px solid var(--border-light);
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
@@ -175,7 +215,7 @@
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 24px;
+            padding: 20px;
             margin-bottom: 20px;
             transition: var(--transition);
         }
@@ -191,10 +231,12 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
             text-decoration: none;
@@ -202,6 +244,7 @@
             align-items: center;
             gap: 8px;
             flex: 1;
+            min-width: 0;
         }
 
         .card-title:hover {
@@ -216,7 +259,8 @@
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
             font-size: 13px;
             color: var(--text-muted);
             margin-bottom: 16px;
@@ -226,6 +270,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
 
         .meta-divider {
@@ -242,6 +287,7 @@
             border-radius: 12px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .star-count {
@@ -300,14 +346,15 @@
             color: var(--text-secondary);
             line-height: 1.6;
             font-size: 14px;
-
         }
-.card-content pre {
-    max-width: 100%;
-    overflow-x: auto;
-    white-space: pre-wrap; /* 或者 white-space: pre; 保持原格式 */
-    word-break: break-all;
-}
+
+        .card-content pre {
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
         .project-image {
             margin-top: 16px;
             border-radius: var(--radius-sm);
@@ -330,6 +377,8 @@
         .md-body {
             color: var(--text-secondary);
             line-height: 1.7;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
 
         .md-body p {
@@ -338,14 +387,22 @@
 
         .md-body ul, .md-body ol {
             margin: 12px 0;
-            padding-left: 24px;
+            padding-left: 20px;
         }
 
         .md-body li {
             margin: 6px 0;
         }
 
-img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 0; border-radius: 6px; border: 1px solid #d0d7de; }
+        img, .project-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 16px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+        }
+
         .md-body pre {
             background: var(--bg-secondary);
             border-radius: var(--radius-sm);
@@ -363,47 +420,9 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             border-radius: 4px;
             font-size: 13px;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            word-break: break-word;
         }
 
-        /* 响应式设计 */
-        @media (max-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .section-header {
-                font-size: 20px;
-            }
-        }
-
-        /* 动画效果 */
-        .card, .nav-item {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 分隔线 */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 40px 0;
-            opacity: 0.6;
-        }
         /* 网站iframe样式 */
         .website-section {
             margin-bottom: 40px;
@@ -415,8 +434,10 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             text-decoration: none;
             font-weight: 500;
             padding: 6px 12px;
+            border: 1px solid var(--primary);
             border-radius: var(--radius-sm);
             transition: var(--transition);
+            white-space: nowrap;
         }
 
         .website-link:hover {
@@ -468,6 +489,7 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             padding: 12px;
             background: var(--bg-secondary);
             border-radius: var(--radius-sm);
+            flex-wrap: wrap;
         }
 
         .website-btn {
@@ -486,34 +508,12 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             border-color: var(--primary);
         }
 
-        /* 响应式设计 */
-        @media (max-width: 1024px) {
-            .website-frame-container {
-                height: 500px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .section-header {
-                font-size: 20px;
-            }
-
-            .website-frame-container {
-                height: 400px;
-            }
-
-            .website-controls {
-                flex-wrap: wrap;
-            }
+        /* 分隔线 */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 40px 0;
+            opacity: 0.6;
         }
 
         /* 动画效果 */
@@ -530,17 +530,280 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 分隔线 */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 40px 0;
-            opacity: 0.6;
+        /* 移动端底部导航 */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+            padding: 10px;
+            z-index: 997;
+        }
+
+        .mobile-nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .mobile-nav-item.active {
+            color: var(--primary);
+            background: var(--bg-secondary);
+        }
+
+        .mobile-nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .website-frame-container {
+                height: 500px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* 移动端菜单按钮 */
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            /* 侧边栏在移动端隐藏 */
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            /* 主内容区域全宽 */
+            .main {
+                margin-left: 0;
+                padding: 20px 16px 80px;
+                max-width: 100%;
+            }
+
+            /* 移动端底部导航 */
+            .mobile-bottom-nav {
+                display: block;
+            }
+
+            /* 调整标题大小 */
+            .section-header {
+                font-size: 20px;
+                padding: 0 0 12px 0;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .section-header::before {
+                display: none;
+            }
+
+            /* 卡片调整 */
+            .card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .card-title {
+                font-size: 15px;
+            }
+
+            .card-meta {
+                font-size: 12px;
+            }
+
+            .meta-divider {
+                display: none;
+            }
+
+            .meta-item {
+                margin-right: 8px;
+            }
+
+            /* 单列布局 */
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            /* 网站链接按钮 */
+            .website-link {
+                width: 100%;
+                text-align: center;
+                margin-top: 8px;
+            }
+
+            /* iframe调整 */
+            .website-frame-container {
+                height: 300px;
+                border-radius: var(--radius-sm);
+            }
+.website-frame-container::after {
+        content: "💡 双指或侧边滑动以滚动页面";
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.5);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 10px;
+        pointer-events: none; /* 不遮挡点击 */
+        opacity: 0.7;
+    }
+            /* 隐藏桌面端的大图标 */
+            .section-header::before {
+                display: none;
+            }
+
+            /* 移动端优化表格和长文本 */
+            table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            pre, code {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main {
+                padding: 20px 12px 80px;
+            }
+
+            .website-frame-container {
+                height: 250px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .badge {
+                align-self: flex-start;
+                margin-top: 8px;
+            }
+
+            .section {
+                margin-bottom: 40px;
+            }
+
+            .divider {
+                margin: 30px 0;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media (max-width: 360px) {
+            .main {
+                padding: 16px 8px 80px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .website-frame-container {
+                height: 200px;
+            }
+
+            .mobile-nav-item {
+                font-size: 10px;
+                padding: 6px;
+            }
+
+            .mobile-nav-icon {
+                font-size: 18px;
+            }
+        }
+
+        /* 横屏优化 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .website-frame-container {
+                height: 300px;
+            }
+
+            .sidebar {
+                padding-top: 20px;
+            }
+
+            .logo {
+                margin-bottom: 20px;
+            }
+
+            .nav-group {
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="sidebar">
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- 移动端底部导航 -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-items">
+            <a href="#github-issues" class="mobile-nav-item" data-target="#github-issues">
+                <span class="mobile-nav-icon">📦</span>
+                <span>开源项目</span>
+            </a>
+            <a href="#website-design" class="mobile-nav-item" data-target="#website-design">
+                <span class="mobile-nav-icon">🎨</span>
+                <span>设计周刊</span>
+            </a>
+            <a href="#website-lazy" class="mobile-nav-item" data-target="#website-lazy">
+                <span class="mobile-nav-icon">😴</span>
+                <span>偷懒周刊</span>
+            </a>
+            <a href="#star-0" class="mobile-nav-item" data-target="#star-0">
+                <span class="mobile-nav-icon">⭐</span>
+                <span>Star项目</span>
+            </a>
+        </div>
+    </nav>
+
+    <nav class="sidebar" id="sidebar">
         <div class="logo">
             <div class="logo-icon">📊</div>
             <div class="logo-text">聚合资源</div>
@@ -557,7 +820,7 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
                 开源项目-1
             </a>
         </div>
-   
+        
     <div class="nav-group">
         <div class="nav-title">周刊</div>
         <a href="#website-design" class="nav-item">
@@ -578,14 +841,29 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             <div class="nav-title">精选 Star 项目</div>
             <a href="#star-0" class="nav-item"><span class="nav-dot"></span>Python</a><a href="#star-1" class="nav-item"><span class="nav-dot"></span>JavaScript</a><a href="#star-2" class="nav-item"><span class="nav-dot"></span>Swift</a><a href="#star-3" class="nav-item"><span class="nav-dot"></span>Vue</a><a href="#star-4" class="nav-item"><span class="nav-dot"></span>PHP</a><a href="#star-5" class="nav-item"><span class="nav-dot"></span>TypeScript</a><a href="#star-6" class="nav-item"><span class="nav-dot"></span>Dart</a><a href="#star-7" class="nav-item"><span class="nav-dot"></span>Rust</a><a href="#star-8" class="nav-item"><span class="nav-dot"></span>Kotlin</a><a href="#star-9" class="nav-item"><span class="nav-dot"></span>C#</a><a href="#star-10" class="nav-item"><span class="nav-dot"></span>Shell</a><a href="#star-11" class="nav-item"><span class="nav-dot"></span>HTML</a><a href="#star-12" class="nav-item"><span class="nav-dot"></span>Go</a><a href="#star-13" class="nav-item"><span class="nav-dot"></span>miscellaneous</a><a href="#star-14" class="nav-item"><span class="nav-dot"></span>Jinja</a><a href="#star-15" class="nav-item"><span class="nav-dot"></span>Batchfile</a><a href="#star-16" class="nav-item"><span class="nav-dot"></span>Java</a><a href="#star-17" class="nav-item"><span class="nav-dot"></span>SCSS</a><a href="#star-18" class="nav-item"><span class="nav-dot"></span>Jupyter Notebook</a><a href="#star-19" class="nav-item"><span class="nav-dot"></span>C</a><a href="#star-20" class="nav-item"><span class="nav-dot"></span>MDX</a><a href="#star-21" class="nav-item"><span class="nav-dot"></span>CSS</a><a href="#star-22" class="nav-item"><span class="nav-dot"></span>Haskell</a><a href="#star-23" class="nav-item"><span class="nav-dot"></span>C++</a><a href="#star-24" class="nav-item"><span class="nav-dot"></span>Stylus</a><a href="#star-25" class="nav-item"><span class="nav-dot"></span>CMake</a><a href="#star-26" class="nav-item"><span class="nav-dot"></span>Astro</a><a href="#star-27" class="nav-item"><span class="nav-dot"></span>AutoHotkey</a><a href="#star-28" class="nav-item"><span class="nav-dot"></span>PowerShell</a><a href="#star-29" class="nav-item"><span class="nav-dot"></span>Svelte</a><a href="#star-30" class="nav-item"><span class="nav-dot"></span>Pug</a><a href="#star-31" class="nav-item"><span class="nav-dot"></span>AppleScript</a><a href="#star-32" class="nav-item"><span class="nav-dot"></span>Less</a><a href="#star-33" class="nav-item"><span class="nav-dot"></span>Perl</a><a href="#star-34" class="nav-item"><span class="nav-dot"></span>Pascal</a><a href="#star-35" class="nav-item"><span class="nav-dot"></span>EJS</a><a href="#star-36" class="nav-item"><span class="nav-dot"></span>AngelScript</a><a href="#star-37" class="nav-item"><span class="nav-dot"></span>Ruby</a><a href="#star-38" class="nav-item"><span class="nav-dot"></span>Dockerfile</a><a href="#star-39" class="nav-item"><span class="nav-dot"></span>Clojure</a><a href="#star-40" class="nav-item"><span class="nav-dot"></span>Metal</a>
         </div>
-
-     
     </nav>
 
     <main class="main">
         <section id="github-issues" class="section">
             <h2 class="section-header">开源项目-0</h2>
             
+        <div class="card github-card">
+            <div class="card-header">
+                <a href="https://github.com/ruanyf/weekly/issues/8696" target="_blank" class="card-title">
+                    <svg class="icon" viewBox="0 0 16 16" width="16" height="16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                    NginxPulse - Nginx 日志分析工具
+                </a>
+                <span class="badge">Issue</span>
+            </div>
+            <div class="card-meta">
+                <span class="meta-item author">👤 likaia</span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item date">📅 2026-01-13</span>
+            </div>
+            <div class="md-body" data-markdown="&quot;\u8f7b\u91cf\u7ea7 Nginx \u8bbf\u95ee\u65e5\u5fd7\u5206\u6790\u4e0e\u53ef\u89c6\u5316\u9762\u677f\uff0c\u63d0\u4f9b\u5b9e\u65f6\u7edf\u8ba1\u3001PV \u8fc7\u6ee4\u3001IP \u5f52\u5c5e\u5730\u4e0e\u5ba2\u6237\u7aef\u89e3\u6790\u3002\n\n&lt;img width=\&quot;1810\&quot; height=\&quot;970\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/72c0ef9e-778e-4cb8-ae2f-0f0fc17a08b6\&quot; /&gt;\n\n&lt;img width=\&quot;1780\&quot; height=\&quot;995\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/2fdcc6e4-7b85-455c-981d-16d81e137b0b\&quot; /&gt;&quot;"></div>
+        </div>
         <div class="card github-card">
             <div class="card-header">
                 <a href="https://github.com/ruanyf/weekly/issues/8695" target="_blank" class="card-title">
@@ -2268,23 +2546,6 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
                 <span class="meta-item date">📅 2025-12-30</span>
             </div>
             <div class="md-body" data-markdown="&quot;# py2dist\n\n## \u6e90\u7801\u4ed3\u5e93\n\nhttps://github.com/xxnuo/py2dist\n\n## \u9879\u76ee\u8d77\u6e90\uff1a\n\n\u6709\u65f6\u5019\u9700\u8981\u53d1\u5e03 Python \u9879\u76ee\uff0c\u4f46\u662f\u4e0d\u5e0c\u671b\u5ba2\u6237\u81ea\u5df1\u4e71\u6539\u4ee3\u7801\u5bfc\u81f4\u51fa\u95ee\u9898\uff0c\u6240\u4ee5\u9700\u8981\u80fd\u591f\u7b80\u5355\u7684\u4fdd\u62a4\u6e90\u7801\u6587\u4ef6\u3002\n\n\u56e0\u4e3a Python \u7684\u8bbe\u8ba1\u54f2\u5b66\u5c31\u662f\u53d1\u5e03\u6e90\u4ee3\u7801\uff0c\u6240\u4ee5 CPython \u5e76\u6ca1\u6709\u771f\u6b63\u7684\u7f16\u8bd1\u529f\u80fd\uff0c\u4f46\u662f\u6709\u8bb8\u591a\u4eba\u505a\u4e86\u8fd9\u65b9\u9762\u7684\u5de5\u4f5c\u4e86\u3002\n\n\u6211\u6bd4\u8f83\u4e86\u73b0\u5728\u6bd4\u8f83\u6d41\u884c\u7684\u51e0\u4e2a\u9879\u76ee\uff1a\n- [`Nuitka`](https://nuitka.net/) \u7684\u7f16\u8bd1\u662f\u771f\u7f16\u8bd1\uff0c\u7ecf\u8fc7\u7279\u6b8a\u4f18\u5316\u5c06 Python \u4ee3\u7801\u7f16\u8bd1\u6210 C \u4ee3\u7801\uff0c\u56e0\u6b64\u4e00\u4e9b\u7b2c\u4e09\u65b9\u5305\u8fd8\u8981\u5355\u72ec\u9002\u914d\u548c\u8bbe\u7f6e\uff0c\u5e76\u4e14\u6709\u65f6\u5019\u5305\u591a\u4e86\u7f16\u8bd1\u65f6\u95f4\u4f1a\u5f88\u957f\uff0c\u7528\u4e86\u4e00\u6bb5\u65f6\u95f4\u9042\u653e\u5f03\u3002\n- [`Pyarmor`](https://github.com/dashingsoft/pyarmor) \u4e13\u6ce8\u4e8e\u6df7\u6dc6\u52a0\u5bc6\uff0c\u8bd5\u4e86\u4e00\u4e0b\u5176\u5b9e\u5de5\u4f5c\u5012\u662f\u6b63\u5e38\uff0c\u4f46\u662f\u6ca1\u6709\u9009\u62e9\u8fd9\u4e2a\u9879\u76ee\uff0c\u56e0\u4e3a\u6211\u5e76\u4e0d\u9700\u8981\u5b83\u7684\u8bb8\u591a\u52a0\u5bc6\u6df7\u6dc6\u529f\u80fd\uff0c\u800c\u4e14\u5b83\u662f\u5546\u4e1a\u8f6f\u4ef6\u9700\u8981\u4ed8\u8d39\u4e70\u673a\u5668\u8bb8\u53ef\u8bc1\uff0c\u6240\u4ee5\u6ca1\u6709\u9009\u62e9\u8fd9\u4e2a\u5de5\u5177\u3002\n- [`Cython`](https://cython.org/) \u5b8c\u5168\u517c\u5bb9\u73b0\u4ee3 Python \u7248\u672c\u548c\u751f\u6001\uff0c\u867d\u7136\u7eaf `.py` \u4ee3\u7801\u7684\u7f16\u8bd1\u5e76\u975e\u771f\u7684\u7f16\u8bd1\u4e3a C \u4ee3\u7801\uff0c\u4f46\u662f\u4e5f\u8db3\u591f\u6ee1\u8db3\u4e00\u822c\u7684\u4fdd\u62a4\u6e90\u4ee3\u7801\u4e0d\u88ab\u4fee\u6539\u7684\u76ee\u7684\u4e86\u3002\n\n\u5de5\u4f5c\u6d41\u5b8c\u5584\u4f7f\u7528\u4e86\u4e00\u6bb5\u65f6\u95f4\u4e86\uff0c\u6ca1\u6709\u95ee\u9898\uff0c\u6240\u4ee5\u5c06\u8fd9\u4e2a\u9879\u76ee\u5199\u6210\u4e00\u4e2a\u5de5\u5177\u5305\u65b9\u4fbf\u5b89\u88c5\u4f7f\u7528\u5e76\u53d1\u5e03\ud83d\ude0a\u3002\n\n\u8fd9\u4e2a\u9879\u76ee\u4e0d\u6d89\u53ca\u52a0\u5bc6\u6df7\u6dc6\uff0c\u6709\u8fd9\u65b9\u9762\u7684\u9700\u8981\u53ef\u4ee5\u81ea\u884c\u4f18\u5316\u3002\n\n## \u7b80\u8981\u4ecb\u7ecd\n\npy2dist \u662f\u4e00\u4e2a\u4f7f\u7528 Cython \u5c06 Python \u6e90\u4ee3\u7801\u7f16\u8bd1\u4e3a\u4e8c\u8fdb\u5236\u6269\u5c55\u6a21\u5757\uff08.so/.pyd\uff09\u7684\u5de5\u5177\uff0c\u7528\u4e8e\u7b80\u5355\u5730\u4fdd\u62a4\u6e90\u4ee3\u7801\u4e0d\u88ab\u66f4\u6539\uff0c\u9002\u7528\u4e8e\u53d1\u5e03 Python \u9879\u76ee\u3001Docker \u670d\u52a1\u955c\u50cf\u7684\u6784\u5efa\u7b49\u573a\u666f\u3002\n\n## \u529f\u80fd\n\n- \u652f\u6301 Linux\u3001Mac\u3001Windows \u5e73\u53f0\n- \u652f\u6301\u5c06\u5355\u4e2a `.py` \u6587\u4ef6\u6216\u6574\u4e2a\u76ee\u5f55\u7f16\u8bd1\u4e3a\u4e8c\u8fdb\u5236\u6587\u4ef6\n- \u4fdd\u6301\u76ee\u5f55\u7ed3\u6784\uff0c\u81ea\u52a8\u590d\u5236\u5176\u4ed6\u6587\u4ef6\u5230\u8f93\u51fa\u76ee\u5f55\n- \u652f\u6301\u6392\u9664\u6307\u5b9a\u6587\u4ef6\u6216\u76ee\u5f55\n- \u81ea\u52a8\u68c0\u6d4b\u5e76\u4f7f\u7528 ccache \u52a0\u901f\u7f16\u8bd1\n- \u83b7\u5f97 Cython \u7f16\u8bd1\u5e26\u6765\u7684\u4e00\u70b9\u6027\u80fd\u63d0\u5347\n- \u63d0\u4f9b CLI \u548c Python API \u4e24\u79cd\u4f7f\u7528\u65b9\u5f0f\n\n## \u5b89\u88c5\n\n```bash\npip install py2dist\n```\n\n\u5efa\u8bae\u4f7f\u7528 [`uv`](https://docs.astral.sh/uv/) \u5b89\u88c5\u548c\u7ba1\u7406\u865a\u62df\u73af\u5883\uff0c\u5e76\u56fa\u5b9a Python \u7248\u672c\u53f7\uff0c\u907f\u514d\u7248\u672c\u4e0d\u4e00\u81f4\u5bfc\u81f4\u7f16\u8bd1\u7ed3\u679c\u4e0e\u5b9e\u9645\u8fd0\u884c\u73af\u5883\u4e0d\u4e00\u81f4\u3002\u4ee5 Python 3.12 \u4e3a\u4f8b\uff1a\n\n```bash\nuv python pin 3.12\nuv venv\nuv add --dev py2dist\n```\n\n&gt; \u4e0d\u5efa\u8bae\u4f7f\u7528 `uv tool install py2dist` \u65b9\u6cd5\u5b89\u88c5\uff0c\u56e0\u4e3a\u8fd9\u6837\u7684\u8bdd\u4f1a\u8c03\u7528\u7cfb\u7edf\u7684 Python \u7248\u672c\u7f16\u8bd1\uff0c\u5bfc\u81f4\u7f16\u8bd1\u7ed3\u679c\u4e0e\u5b9e\u9645\u8fd0\u884c\u7684\u865a\u62df\u73af\u5883\u73af\u5883\u4e0d\u4e00\u81f4\u3002\n\n## \u4f7f\u7528\n\n\u7f16\u8bd1\u5355\u4e2a\u6587\u4ef6\uff1a\n```bash\npy2dist -f myscript.py\n```\n\n\u6216\u4f7f\u7528 `uv` \u547d\u4ee4\uff1a\n```bash\nuv run py2dist -f myscript.py\n```\n\n\u8f93\u51fa\u6587\u4ef6\u4f4d\u7f6e\u4e3a `dist/myscript.so`\n\n\u7f16\u8bd1\u6574\u4e2a\u76ee\u5f55\uff1a\n```bash\npython3 -m py2dist -d myproject\n```\n\n\u6216\u4f7f\u7528 `uv` \u547d\u4ee4\uff1a\n```bash\nuv run py2dist -d myproject\n```\n\n\u8f93\u51fa\u6587\u4ef6\u4f4d\u7f6e\u4e3a `dist/myproject`\uff0c\u5e76\u4e14\u4f1a\u81ea\u52a8\u590d\u5236\u975e `.py` \u6587\u4ef6\u5230\u8f93\u51fa\u76ee\u5f55\u3002\n\n\u7f16\u8bd1\u751f\u6210\u7684\u4e8c\u8fdb\u5236\u6269\u5c55\u6a21\u5757\uff08.so/.pyd\uff09\u4e0e\u7279\u5b9a\u7684 Python \u7248\u672c\u7ed1\u5b9a\u3002\u60a8\u5fc5\u987b\u786e\u4fdd\u7f16\u8bd1\u65f6\u4f7f\u7528\u7684 Python \u7248\u672c\u4e0e\u8fd0\u884c\u65f6\u4f7f\u7528\u7684 Python \u7248\u672c\u5b8c\u5168\u4e00\u81f4\uff08\u5305\u62ec\u6b21\u8981\u7248\u672c\u53f7\uff0c\u4f8b\u5982 3.10 \u548c 3.11 \u662f\u4e0d\u517c\u5bb9\u7684\uff09\u3002\n\n\u590d\u6742\u4f7f\u7528\u573a\u666f\u4ecb\u7ecd\u8be6\u89c1\uff1ahttps://github.com/xxnuo/py2dist/blob/main/README_zh.md#%E7%A4%BA%E4%BE%8B%E7%94%A8%E6%B3%95&quot;"></div>
-        </div>
-        <div class="card github-card">
-            <div class="card-header">
-                <a href="https://github.com/ruanyf/weekly/issues/8574" target="_blank" class="card-title">
-                    <svg class="icon" viewBox="0 0 16 16" width="16" height="16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                    </svg>
-                     轻量 macOS 键鼠使用统计菜单栏应用 KeyStats
-                </a>
-                <span class="badge">Issue</span>
-            </div>
-            <div class="card-meta">
-                <span class="meta-item author">👤 debugtheworldbot</span>
-                <span class="meta-divider">•</span>
-                <span class="meta-item date">📅 2025-12-30</span>
-            </div>
-            <div class="md-body" data-markdown="&quot;\n* \u7edf\u8ba1\u952e\u76d8\u6572\u51fb\u3001\u9f20\u6807\u70b9\u51fb/\u79fb\u52a8/\u6eda\u52a8\n* \u6570\u636e\u5168\u90e8\u672c\u5730\u5b58\u50a8\n* \u6bcf\u65e5\u81ea\u52a8\u91cd\u7f6e\uff0c\u80fd\u770b\u5230\u8d8b\u52bf\u56fe\n* \u4f53\u79ef\u7ea6 1MB \uff0c\u8f7b\u91cf\n\n\u9879\u76ee\u5730\u5740\uff1a https://github.com/debugtheworldbot/keyStats\n\n&lt;img width=\&quot;361\&quot; height=\&quot;733\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/b7153c5f-a56b-4704-9bfd-b9ef9ed58c9f\&quot; /&gt;\n\n&quot;"></div>
         </div>
         </section>
 
@@ -3994,7 +4255,7 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
             <div class="md-body" data-markdown="&quot;&lt;div align=\&quot;center\&quot;&gt;\n\n&lt;img width=\&quot;80%\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/fb2c5bbe-65c7-4316-976f-2e37f9857025\&quot; /&gt;\n\n&lt;/div&gt;\n\n## \u4e00\u3001\u5feb\u901f\u4ecb\u7ecd\n`WebSocket DevTools` \u662f\u7528\u4e8e WebSocket \u8c03\u8bd5\u7684 Chrome \u63d2\u4ef6\uff0c\u63d0\u4f9b\u76d1\u63a7\u3001\u62e6\u622a\u3001\u6a21\u62df\u3001\u6536\u85cf\u7b49\u6838\u5fc3\u529f\u80fd\u3002\u529f\u80fd\u5f3a\u5927\uff0c\u64cd\u4f5c\u754c\u9762\u53cb\u597d\n\n## \u4e8c\u3001\u6838\u5fc3\u529f\u80fd\n- \ud83d\udd0d \u5b9e\u65f6\u76d1\u63a7 - \u5b9e\u65f6\u8ddf\u8e2aWebSocket\u8fde\u63a5\u548c\u6d88\u606f\u66f4\u65b0\n- \ud83d\udd04 \u540e\u53f0\u76d1\u63a7 - \u5373\u4f7f\u5173\u95edDevTools\u9762\u677f\u4e5f\u80fd\u6301\u7eed\u76d1\u63a7\u8fde\u63a5\n- \ud83c\udfae \u6d88\u606f\u6a21\u62df - \u53cc\u5411\u53d1\u9001\u81ea\u5b9a\u4e49\u6d88\u606f (\u5ba2\u6237\u7aef \u2194 \u670d\u52a1\u5668)\n- \ud83d\udea7 \u6d41\u91cf\u63a7\u5236 - \u62e6\u622a\u6d88\u606f\u5e76\u6a21\u62df\u7f51\u7edc\u95ee\u9898\u8fdb\u884c\u6d4b\u8bd5\n- \ud83d\udcbe \u6536\u85cf\u7cfb\u7edf - \u4fdd\u5b58\u548c\u7ec4\u7ec7\u5e38\u7528\u6d88\u606f\n- \ud83c\udf0d \u591a\u8bed\u8a00\u652f\u6301 - \u5b8c\u6574\u7684\u82f1\u6587\u548c\u4e2d\u6587\u652f\u6301\n- \ud83c\udfa8 DevTools\u96c6\u6210 - \u539f\u751fChrome DevTools\u9762\u677f\u4f53\u9a8c\n- \ud83d\uddbc\ufe0f Iframe\u652f\u6301 - \u5b8c\u6574\u7684iframe\u5d4c\u5165\u5f0f\u8fde\u63a5WebSocket\u4ee3\u7406\u652f\u6301\n\n## \u4e09\u3001\u5feb\u901f\u6f14\u793a\n\n\u5feb\u901f\u6f14\u793a\u5176\u4e2d\u4e00\u6761\u6700\u4f73\u5b9e\u8df5\uff0c\u76d1\u542c\u5e76\u4ee3\u7406\u6389\u9875\u9762\u5efa\u7acb\u7684WS\u8fde\u63a5\uff0c\u5728\u8fde\u63a5\u6536\u5230\u4e00\u6761\u5d4c\u5957\u7684JSON\u6d88\u606f\u540e\uff08JSON\u91cc\u9762\u67d0\u4e2a\u503c\u662f String\uff0c\u4f46\u662f\u53ef\u4ee5\u88ab\u89e3\u6790\u4e3a JSON\uff09\u5c06\u5176\u5d4c\u5957\u89e3\u6790\uff0c\u5728`\u6a21\u62df\u63a7\u5236\u53f0`\u4e2d\u4fee\u6539\u5176\u4e2d\u67d0\u4e2a\u503c\uff0c\u6bd4\u5982 `USA` -&gt; `CHINA` \u7136\u540e\u5728\u6a21\u62df\u63a5\u6536\u3002\u8fd9\u5c31\u50cf Proxyman \u4e4b\u7c7b\u7684\u4ee3\u7406\u8c03\u8bd5\u8f6f\u4ef6\u4e00\u6837\u8c03\u8bd5 WebSocket\uff0c\u800c\u8fd9\u4e2a\u62e6\u622a + \u6a21\u62df\u7684\u80fd\u529b\uff0c\u76ee\u524d\u6682\u65f6\u5e02\u9762\u4e0a\u6ca1\u6709\u3002\n\n- \u5b8c\u6574\u7248 Demo\uff1a[Watch the demo on YouTube](https://www.youtube.com/watch?v=L64x__1xORQ)\n- \u6587\u5b57\u7248\u4ecb\u7ecd\uff1a[\u6398\u91d1\u5730\u5740](https://juejin.cn/post/7532332561072144427)\n\n&lt;div align=\&quot;center\&quot;&gt;\n\n&lt;img width=\&quot;77%\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/02b57414-a4eb-48e1-9a2b-aef0cceaa754\&quot; /&gt;\n\n&lt;/div&gt;\n\n\n\n\n## \u56db\u3001\u5b98\u7f51\u4e0e\u4e0b\u8f7d\n\n*   \u5b98\u7f51\u5730\u5740\uff1a[websocket-devtools.com](https://websocket-devtools.com)\n*   \u63d2\u4ef6\u5730\u5740\uff1a[Chrome \u5546\u5e97](https://chromewebstore.google.com/detail/websocket-devtools/fmnaobbfmjaaaebelkacpmmmpaaefbod)\n*   \u6e90\u7801\u5730\u5740\uff1a[GitHub](https://github.com/law-chain-hot/websocket-devtools)\n\n\uff08\u652f\u6301\u4e2d\u6587/\u82f1\u6587\uff0c\u53ef\u624b\u52a8\u5207\u6362\u8bed\u8a00\uff09\n\n\n\n\n&lt;div align=\&quot;center\&quot;&gt;\n\n&lt;img width=\&quot;80%\&quot; alt=\&quot;Image\&quot; src=\&quot;https://github.com/user-attachments/assets/e5c8b15f-492d-48e1-befd-6393c3d2caa1\&quot; /&gt;\n\n&lt;/div&gt;\n\n\u8c22\u8c22\u63d0\u4f9b\u5e73\u53f0\uff0c\u5e0c\u671b\u80fd\u5206\u4eab\u7ed9\u5927\u5bb6\uff01&quot;"></div>
         </div>
         </section>
-    <div class="divider"></div>
+        <div class="divider"></div>
 
         
     <section id="website-design" class="section website-section">
@@ -8990,11 +9251,96 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
 </ul></div>
         </div>
         </section>
-
-    
     </main>
 
     <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section');
+
+        if (mobileMenuBtn && sidebar && sidebarOverlay) {
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // 点击导航项后关闭侧边栏（移动端）
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // 移动端底部导航点击
+            mobileNavItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+
+                        // 更新底部导航状态
+                        mobileNavItems.forEach(i => {
+                            i.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // 移动端滚动时更新底部导航
+            window.addEventListener('scroll', () => {
+                if (window.innerWidth <= 768) {
+                    const scrollPos = window.scrollY + 100;
+
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.clientHeight;
+                        const sectionId = section.getAttribute('id') || '';
+
+                        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                            mobileNavItems.forEach(item => {
+                                item.classList.remove('active');
+                                if (item.getAttribute('data-target') === `#${sectionId}`) {
+                                    item.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // 检测设备类型
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // 窗口大小变化时调整
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                // 桌面端显示侧边栏
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
         // Markdown 渲染
         const md = window.markdownit({
             html: true,
@@ -9025,9 +9371,6 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
         hljs.highlightAll();
 
         // 导航激活状态
-        const navItems = document.querySelectorAll('.nav-item');
-        const sections = document.querySelectorAll('section');
-
         const updateActiveNav = () => {
             const scrollPos = window.scrollY + 100;
 
@@ -9043,6 +9386,16 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
                             item.classList.add('active');
                         }
                     });
+
+                    // 更新移动端底部导航
+                    if (window.innerWidth <= 768) {
+                        mobileNavItems.forEach(item => {
+                            item.classList.remove('active');
+                            if (item.getAttribute('data-target') === `#${sectionId}`) {
+                                item.classList.add('active');
+                            }
+                        });
+                    }
                 }
             });
         };
@@ -9080,6 +9433,16 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
                     // 更新导航状态
                     navItems.forEach(item => item.classList.remove('active'));
                     this.classList.add('active');
+
+                    // 更新移动端导航
+                    if (window.innerWidth <= 768) {
+                        mobileNavItems.forEach(item => {
+                            item.classList.remove('active');
+                            if (item.getAttribute('data-target') === targetId) {
+                                item.classList.add('active');
+                            }
+                        });
+                    }
                 }
             });
         });
@@ -9099,8 +9462,6 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
                 loading.style.background = '#fee';
                 loading.style.color = '#c00';
             };
-
-     
         });
 
         // 初始化
@@ -9108,7 +9469,7 @@ img, .project-img { max-width: 100%; height: auto; display: block; margin: 16px 
         window.addEventListener('load', lazyLoadImages);
         updateActiveNav();
 
-        console.log('🎨 简约风格看板加载完成！');
+        console.log('🎨 自适应看板加载完成！');
     </script>
 </body>
 </html>
